@@ -8,6 +8,7 @@ router.get("/api/products", async (req, res)=> {
     try {
         const products = await productManager.getProducts()
         const limit = parseInt(req.query.limit)
+        // Logica un poco más extensa para añadir la funcionalidad de "?limit="
         if (limit) {
             res.json({status:"success", message:products.slice(0,limit)}) 
         } else {

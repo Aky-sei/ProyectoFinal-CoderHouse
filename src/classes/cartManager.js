@@ -1,5 +1,6 @@
 import {promises as fs} from 'fs'
 
+// clase que maneja los carritos, separado en un archivo aparte para más facilidad en la lectura.
 class CartManager {
     constructor (path) {
         this.path = path

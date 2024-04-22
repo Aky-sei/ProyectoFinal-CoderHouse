@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs'
 
+//Clase que maneja los productos, separado en un archivo aparte para más facilidad en la lectura.
 class ProductManager {
     constructor (path) {
         this.path = path
@@ -70,6 +71,8 @@ class ProductManager {
                     throw new Error("El campo 'code' no puede repetirse")
                 } else {
                     const temp = {
+                        // El objeto "temp" es construido con los parametros dados, los parametros faltanes con
+                        // reemplazados por los datos del objeto a actualizar.
                         title: title || data[index].title,
                         description: description || data[index].description,
                         code: code || data[index].code,
@@ -78,6 +81,7 @@ class ProductManager {
                         stock: stock || data[index].stock,
                         category: category || data[index].category,
                         thumbnail: thumbnail || data[index].thumbnail || [],
+                        // El id siempre es igual al del objeto a actualizar.
                         id: id
                     }
                     data[index] = temp
