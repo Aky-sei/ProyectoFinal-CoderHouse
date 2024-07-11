@@ -1,62 +1,62 @@
+import cookieParser from 'cookie-parser'
 import express from 'express'
-import { router as productsRouter } from './routes/products.router.js'
-import { router as cartsRouter } from './routes/carts.router.js'
-// Añadidos los imports necesarios para añadis handlebars y sockets
-import { router as viewsRouter } from './routes/views.router.js'
-import __dirname from './utils.js'
+import passport from 'passport'
 import handlebars from 'express-handlebars'
-import { Server } from 'socket.io'
-import { productModel } from './dao/models/product.model.js'
-import { messageModel } from './dao/models/message.model.js'
 import mongoose from 'mongoose'
+import session from 'express-session'
+import { Server } from 'socket.io'
+import { __dirname } from './utils.js'
+import initializePassport from './config/passport.config.js'
+import cors from 'cors'
+import configSocket from './config/socket.config.js'
+// Configuración de dotenv
+import 'dotenv/config'
+// Importando los routers
+import ProductsRouter from './routes/products.router.js'
+import CartsRouter from './routes/carts.router.js'
+import SessionsRouter from './routes/sessions.router.js'
+import ViewsRouter from './routes/views.router.js'
 
+// Inicializamos el servidor
 const app = express()
 const PORT = 8080
 const httpServer = app.listen(PORT, console.log(`server runing on port ${PORT}`))
 
-const socketServer = new Server(httpServer)
+// Sessions middleware, usado para el login con github
+app.use(session({
+    secret: 'secretkey',
+    resave: false,
+    saveUninitialized: false
+}))
+// Configuración de app e inicialización de las dependencias necesarias
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
+// passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+// cookieparser
+app.use(cookieParser())
+// handlebars
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
 
-app.use("/", viewsRouter)
-app.use("/api/products", productsRouter)
-app.use("/api/carts", cartsRouter)
+// Configuramos las rutas, usando un custom router
+const productsRouter = new ProductsRouter()
+app.use("/api/products/", productsRouter.getRouter())
+const cartsRouter = new CartsRouter()
+app.use("/api/carts/", cartsRouter.getRouter())
+const sessionsRouter = new SessionsRouter()
+app.use("/api/sessions/", sessionsRouter.getRouter())
+const viewsRouter = new ViewsRouter()
+app.use("/", viewsRouter.getRouter())
 
-mongoose.connect('mongodb+srv://diegohs:diegohs0204@codercluster.b2nuohi.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=CoderCluster')
+// Conectamos la base de datos
+mongoose.connect(process.env.MONGOO_URL)
 
-socketServer.on('connection', socket => {
-    socket.on('addProductBtn', async product => {
-        try {
-            await productModel.create(product)
-            const data = await productModel.find()
-            socketServer.emit("updateProducts", data)
-        } catch(error) {
-            console.error("Error en la conexión", error)
-        }
-    })
-    socket.on('deleteProductBtn', async id => {
-        try {
-            await productModel.deleteOne({_id:id})
-            const data = await productModel.find()
-            socketServer.emit("updateProducts", data)
-        } catch(error) {
-            console.error("Error en la conexión", error)
-        }
-    })
-    // Evento correspondiente al chat, recibiendo en nuevo mensaje, añadiendolo a la base de datos.
-    // Para luego volver a enviar todos los mensajes a los usuarios y actualizar la vista.
-    socket.on('newMessage', async message => {
-        try {
-            await messageModel.create(message)
-            const data = await messageModel.find()
-            socketServer.emit('updateMessages', data)
-        } catch(error) {
-            console.error("Error en la conexión", error)
-        }
-    })
-})
+// Configuración del socket.io para el chat
+const socketServer = new Server(httpServer)
+configSocket(socketServer)

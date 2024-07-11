@@ -8,4 +8,6 @@ const messsageSchema = new mongoose.Schema({
     message:{type:String, required: true},
 })
 
-export const messageModel = mongoose.model(messageColection, messsageSchema)
+const messageModel = mongoose.model(messageColection, messsageSchema)
+
+export default messageModel

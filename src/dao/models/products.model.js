@@ -2,8 +2,7 @@ import mongoose from 'mongoose'
 import mongoosePginate from 'mongoose-paginate-v2'
 const productColection = 'products'
 
-// Todas las propiedades y autenticaciones de los productos.
-// Notear que 'thumbnail' no es obligatorio y tiene un arreglo vacio como valor por defecto.
+// Configuramos el modelo de prductos
 const productSchema = new mongoose.Schema({
     title:{type:String, required: true},
     description:{type:String, required: true},
@@ -16,4 +15,6 @@ const productSchema = new mongoose.Schema({
 })
 productSchema.plugin(mongoosePginate)
 
-export const productModel = mongoose.model(productColection, productSchema)
+const productModel = mongoose.model(productColection, productSchema)
+
+export default productModel

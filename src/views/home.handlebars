@@ -1,14 +1,12 @@
-<div id="productsDiv" class="productsDiv">
-    {{#each products}}
-    <div id="product{{this._id}}" class="productContainer">
-        <p><strong>Title:</strong> {{this.title}}</p>
-        <p><strong>Description:</strong> {{this.description}}</p>
-        <p><strong>Code:</strong> {{this.code}}</p>
-        <p><strong>Price:</strong> {{this.price}}</p>
-        <p><strong>Status:</strong> {{this.status}}</p>
-        <p><strong>Stock:</strong> {{this.stock}}</p>
-        <p><strong>Category:</strong> {{this.category}}</p>
-        <p><strong>Id: {{this._id}}</strong></p>
-    </div>
-    {{/each}}
-</div>
+{{#if isLoged }}
+    <a href="/profile"><button>Ver Perfil</button></a>
+    <a href="/cart"><button>VerCarrito</button></a>
+    <a href="/products"><button>Comprar</button></a>
+    <a href="/chat"><button>Chat</button></a> <br>
+    <form action="/api/sessions/logout" method="POST">
+        <input type="submit" value="Log-out">
+    </form>
+{{else}}
+    <a href="/login"><button>Logear</button></a>
+    <a href="/register"><button>Registrarse</button></a>
+{{/if}}
