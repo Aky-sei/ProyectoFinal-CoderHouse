@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 let userId = document.getElementById("userId").innerHTML
 
 let form = document.getElementById("updateForm")

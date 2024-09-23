@@ -1,6 +1,7 @@
 import usersService from "../dao/services/users.service.js"
 import { __dirname } from '../utils.js'
 import nodemailer from 'nodemailer'
+import 'dotenv/config'
 
 async function changeUserRole(req,res) {
     try {

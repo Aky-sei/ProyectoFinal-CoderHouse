@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 const addProductForm = document.getElementById("addProductForm")
 const deleteProductForm = document.getElementById("deleteProductForm")
 
