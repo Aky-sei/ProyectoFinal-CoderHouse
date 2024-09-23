@@ -39,7 +39,7 @@
     let upgradeButton = document.getElementById("upgradeButton")
     upgradeButton.addEventListener("click", async (e) => {
     e.preventDefault()
-    await fetch(`http://localhost:8080/api/users/premium/${userId}`, {
+    await fetch(`${process.env.HOST}/api/users/premium/${userId}`, {
         method: "POST",
         headers: {'Content-Type': 'application/json'}
     }).then(res => res.json())

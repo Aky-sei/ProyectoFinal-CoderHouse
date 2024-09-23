@@ -86,7 +86,7 @@ async function sendPasswordRecoveryEmail(req,res) {
             html: `
                 <div>
                     <h1>Para reestablecer su contraseña, por favor, ingrese a este enlace:<h1/>
-                    <a href="http://localhost:8080/updatepassword/${token}">Reset Password</a>
+                    <a href="${process.env.HOST}/updatepassword/${token}">Reset Password</a>
                 <div/>
             `
         })

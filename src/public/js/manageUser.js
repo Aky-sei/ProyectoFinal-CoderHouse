@@ -3,7 +3,7 @@ let userId = document.getElementById("userId").innerHTML
 let form = document.getElementById("updateForm")
 form.addEventListener("submit", async (e) => {
     e.preventDefault()
-    await fetch(`http://localhost:8080/api/users/${userId}`, {
+    await fetch(`${process.env.HOST}/api/users/${userId}`, {
         method: "PUT",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -15,7 +15,7 @@ form.addEventListener("submit", async (e) => {
 let deleteButton = document.getElementById("deleteUser")
 deleteButton.addEventListener("click", async (e) => {
     e.preventDefault()
-    await fetch(`http://localhost:8080/api/users/${userId}`, {
+    await fetch(`${process.env.HOST}/api/users/${userId}`, {
         method: "DELETE",
         headers: {'Content-Type': 'application/json'}
     })

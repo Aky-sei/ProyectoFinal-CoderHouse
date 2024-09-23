@@ -2,6 +2,7 @@ import passport from 'passport'
 import GitHubStrategy from 'passport-github2'
 import userModel from '../dao/models/users.model.js'
 import cartModel from '../dao/models/carts.model.js'
+import 'dotenv/config'
 
 const initializePassport = () => {
 
@@ -16,7 +17,7 @@ const initializePassport = () => {
     passport.use('github', new GitHubStrategy({
         clientID:"Iv23liaarNckDS2cu6cw",
         clientSecret:'f740ab622b93f27f3198525c49fd08b016244cd5',
-        callbackURL:'http://localhost:8080/api/sessions/githubcallback'
+        callbackURL:`${process.env.HOST}/api/sessions/githubcallback`
     }, async (accessToken,refreshToken,profile,done) => {
         try {
             const user = await userModel.findOne({email:profile._json.email}).lean()

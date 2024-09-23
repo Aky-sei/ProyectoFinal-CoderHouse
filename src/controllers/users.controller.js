@@ -79,7 +79,7 @@ async function deleteInactiveUsers(req,res) {
                     html: `
                         <div>
                             <h1>Le informamos que su cuenta de CoderHouseExample.com ha sido eliminada debido a inactividad.<h1/>
-                            <p>Puede volver a crear una cuenta ingresando nuevamente a la pagina. <a href="http://localhost:8080">Aqui</a><p/>
+                            <p>Puede volver a crear una cuenta ingresando nuevamente a la pagina. <a href="${process.env.HOST}">Aqui</a><p/>
                         <div/>
                     `
                     })

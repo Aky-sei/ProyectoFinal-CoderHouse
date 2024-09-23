@@ -1,7 +1,7 @@
 let form = document.getElementById("loginForm")
 form.addEventListener("submit", async (e) => {
     e.preventDefault()
-    await fetch('http://localhost:8080/api/sessions/login', {
+    await fetch(`${process.env.HOST}/api/sessions/login`, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

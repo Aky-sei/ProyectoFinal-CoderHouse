@@ -3,7 +3,7 @@ import * as chai from "chai"
 import {faker} from '@faker-js/faker'
 
 const expect = chai.expect
-const requester =  supertest('http://localhost:8080/api')
+const requester =  supertest(`${process.env.HOST}/api`)
 
 describe('Test de Products', () => {
     let cookie

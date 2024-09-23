@@ -4,7 +4,7 @@ const deleteProductForm = document.getElementById("deleteProductForm")
 addProductForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     try {
-        await fetch('http://localhost:8080/api/products', {
+        await fetch(`${process.env.HOST}/api/products`, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -25,7 +25,7 @@ addProductForm.addEventListener('submit', async (e) => {
 deleteProductForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     try {
-        await fetch(`http://localhost:8080/api/products/${deleteProductForm[0].value}`, {
+        await fetch(`${process.env.HOST}/api/products/${deleteProductForm[0].value}`, {
             method: "DELETE",
             headers: {'Content-Type': 'application/json'}
         })

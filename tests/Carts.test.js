@@ -2,7 +2,7 @@ import supertest from 'supertest'
 import * as chai from "chai"
 
 const expect = chai.expect
-const requester =  supertest('http://localhost:8080/api')
+const requester =  supertest(`${process.env.HOST}/api`)
 
 describe('Test de Carts', () => {
     let cookie
