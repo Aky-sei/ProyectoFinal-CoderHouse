@@ -22,7 +22,7 @@ import UsersRouter from './routes/users.router.js'
 
 // Inicializamos el servidor
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT || 8080
 const httpServer = app.listen(PORT, console.log(`server runing on port ${PORT}`))
 // Swagger
 app.use('/apidocs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs))

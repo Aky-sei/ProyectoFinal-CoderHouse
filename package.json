@@ -7,7 +7,9 @@
   "scripts": {
     "testSessions": "mocha tests/Sessions.test.js",
     "testProducts": "mocha tests/Products.test.js",
-    "testCarts": "mocha tests/Carts.test.js"
+    "testCarts": "mocha tests/Carts.test.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
