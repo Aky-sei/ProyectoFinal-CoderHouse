@@ -1,8 +1,11 @@
+import CustomError from "../errors/CustomError.js"
+import EErrors from "../errors/enums.js"
+import { generateProductErrorInfo } from "../errors/info.js"
 import productModel from "../models/products.model.js"
 
 // Funciones necesarias para el servicio de productos
 async function getPaginatedProducts(queryParams) {
-    const { limit = 10, page = 1, sort, query = 0} = queryParams
+    const { limit = 3, page = 1, sort, query = 0} = queryParams
     return await productModel.paginate(JSON.parse(query), {
         limit: limit,
         page: page,
@@ -12,13 +15,22 @@ async function getPaginatedProducts(queryParams) {
 }
 
 async function getProductById(id) {
-    return await productModel.findById(id)
+    try {
+        return  await productModel.findById(id)
+    } catch(error) {
+        return undefined
+    }
 }
 
 async function postProduct(product) {
-    const {title,description,code,price,status,stock,category,thumbnail} = product
-    if(!title||!description||!code||!price||!status||!stock||!category) {
-        throw new Error("Por favor, llene todos los campos")
+    const {title,description,code,price,status,stock,category,thumbnail,owner} = product
+    if(!title||!description||!code||!price||!status||!stock||!category||!owner) {     
+        CustomError.createError({
+            name: "Error al crear el producto",
+            cause: generateProductErrorInfo(product),
+            message: "Error el tratar de crear el producto",
+            code: EErrors.INVALID_TYPES_ERROR
+        })
     }
     const createdProduct = await productModel.create({
         title,
@@ -28,15 +40,21 @@ async function postProduct(product) {
         status,
         stock,
         category,
-        thumbnail
+        thumbnail,
+        owner: owner || "ADMIN"
     })
     return createdProduct
 }
 
 async function putProductById(id, newProduct) {
-    const {title,description,code,price,status,stock,category,thumbnail} = newProduct
-    if(!title||!description||!code||!price||!status||!stock||!category) {
-        throw new Error("Por favor, llene todos los campos")
+    const {title,description,code,price,status,stock,category,thumbnail,owner} = newProduct
+    if(!title||!description||!code||!price||!status||!stock||!category||!owner) {
+        CustomError.createError({
+            name: "Error al crear el producto",
+            cause: generateProductErrorInfo(product),
+            message: "Error el tratar de crear el producto",
+            code: EErrors.INVALID_TYPES_ERROR
+        })
     }
     const updatedProduct = await productModel.replaceOne({_id:id}, {
         title,
@@ -46,7 +64,8 @@ async function putProductById(id, newProduct) {
         status,
         stock,
         category,
-        thumbnail
+        thumbnail,
+        owner: owner || "ADMIN"
     })
     return updatedProduct
 }

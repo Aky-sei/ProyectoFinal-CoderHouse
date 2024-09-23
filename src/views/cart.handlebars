@@ -20,19 +20,13 @@
         <button onclick="deleteFromCart(`{{this.product._id}}`)">Eliminar del carrito</button>
     </div>
     {{/each}}
-    <button onclick="createTicket()">Comprar Productos</button>
+    <button><a href="/checkout">Comprar Productos</a></button>
 </div>
 <script>
     const cid = document.getElementById("cartID").value
     function deleteFromCart(pid) {
         fetch(`/api/carts/${cid}/products/${pid}`, {
             method: "DELETE",
-            headers: {'Content-Type': 'application/json'}
-        })
-    }
-    function createTicket() {
-        fetch(`/api/carts/${cid}/purchase`, {
-            method: "GET",
             headers: {'Content-Type': 'application/json'}
         })
     }

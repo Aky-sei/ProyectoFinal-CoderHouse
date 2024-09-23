@@ -13,7 +13,8 @@ form.addEventListener("submit", async (e) => {
         if(body.status === "success") {
             window.location.href = '/profile'
         } else {
-            if(body.error === "Usuario-no-encontrado") {
+            console.log(body)
+            if(body.errorMessage === "Usuario-no-encontrado") {
                 Swal.fire({
                     title:"No se encontro al usuario en la base de datos",
                     showCancelButton: true,
@@ -25,7 +26,7 @@ form.addEventListener("submit", async (e) => {
                         window.location.href = '/register'
                     }
                 })
-            } else if (body.error === "Constraseña-incorrecta") {
+            } else if (body.errorMessage === "Contraseña-incorrecta") {
                 Swal.fire({
                     title:"Constraseña incorrecta",
                     allowOutsideClick: true

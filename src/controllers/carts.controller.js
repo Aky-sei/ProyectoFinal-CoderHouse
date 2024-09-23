@@ -3,6 +3,7 @@ import ticketsService from '../dao/services/tickets.service.js'
 import usersService from '../dao/services/users.service.js'
 import nodemailer from 'nodemailer'
 import 'dotenv/config'
+import productsService from '../dao/services/products.service.js'
 
 const transport = nodemailer.createTransport({
     service: 'gmail',
@@ -39,17 +40,18 @@ async function getCartByParamsId(req,res) {
 async function postProductToCartByParamsId(req,res) {
     try {
         const {products} = await cartsService.getCartById(req.params.cid)
+        if (req.user.role === "PREMIUM") {
+            const prod = await productsService.getProductById(req.params.pid)
+            if (prod.owner === req.user.id) return res.sendUserError("No es posible comprar un producto que te pertenece")
+            }
         const found = products.find(prod => prod.product._id == req.params.pid)
-        if (found) {
-            res.sendUserError("El producto ya existe en ese carrito")
-        } else {
-            products.push({
-                product:req.params.pid,
-                quantity: 1
-            })
-            await cartsService.putCartById(req.params.cid, {products})
-            res.sendSuccess(products)
-        }
+        if (found) return res.sendUserError("El producto ya existe en ese carrito")
+        products.push({
+            product:req.params.pid,
+            quantity: 1
+        })
+        await cartsService.putCartById(req.params.cid, {products})
+        res.sendSuccess(products)
     } catch (error) {
         res.sendServerError("Error al añadir el producto al carrito", error)
     }

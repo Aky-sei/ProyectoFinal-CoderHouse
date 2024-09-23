@@ -10,9 +10,13 @@ export default class SessionsRouter extends CustomRouter{
         
         this.post('/login',["PUBLIC"], sessionsController.loginFromEmailPassword)
         
-        this.post('/logout',["USER", "ADMIN"], sessionsController.logout)
+        this.post('/logout',["USER", "ADMIN", "PREMIUM"], sessionsController.logout)
         
-        this.get('/current',["USER", "ADMIN"], sessionsController.getCurrentUser)
+        this.get('/current',["USER", "ADMIN", "PREMIUM"], sessionsController.getCurrentUser)
+        
+        this.post('/forgotpassword',["PUBLIC"], sessionsController.sendPasswordRecoveryEmail)
+
+        this.post('/updatepassword/:token',["PUBLIC"], sessionsController.updatePassword)
         
         // GitHub
         

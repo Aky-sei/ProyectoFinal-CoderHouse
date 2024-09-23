@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
+import usersService from '../dao/services/users.service.js'
 
 // Creamos el custom router
 export default class CustomRouter{
@@ -17,16 +18,16 @@ export default class CustomRouter{
 
     // Definimos los metodos de CRUD, incluyendo los middlewares que querremos siempre
     get(path,policies,...callbacks) {
-        this.router.get(path,this.handlePolicies(policies),this.generateCustomResponses,this.applyCallbacks(callbacks))
+        this.router.get(path,this.handlePolicies(policies),this.applyCallbacks(callbacks))
     }
     post(path,policies,...callbacks) {
-        this.router.post(path,this.handlePolicies(policies),this.generateCustomResponses,this.applyCallbacks(callbacks))
+        this.router.post(path,this.handlePolicies(policies),this.applyCallbacks(callbacks))
     }
     put(path,policies,...callbacks) {
-        this.router.put(path,this.handlePolicies(policies),this.generateCustomResponses,this.applyCallbacks(callbacks))
+        this.router.put(path,this.handlePolicies(policies),this.applyCallbacks(callbacks))
     }
     delete(path,policies,...callbacks) {
-        this.router.delete(path,this.handlePolicies(policies),this.generateCustomResponses,this.applyCallbacks(callbacks))
+        this.router.delete(path,this.handlePolicies(policies),this.applyCallbacks(callbacks))
     }
 
     applyCallbacks(callbacks) {
@@ -39,33 +40,32 @@ export default class CustomRouter{
         })
     }
 
-    generateCustomResponses(req,res,next) {
-        res.sendSuccess = payload => res.json({status:"success",payload})
-        res.sendServerError = (errorMessage,error) => {
-            console.error(`${errorMessage}:
-                `, error)
-            res.status(500).json({status:"error",errorMessage})
-        }
-        res.sendUserError = error => res.status(400).json({status:"error",error})
-        next()
-    }
-
     // Manejamos los accesos de los usuarios con jwt
-    handlePolicies = policies => (req,res,next) => {
+    handlePolicies = policies => async (req,res,next) => {
         if(policies[0] === "PUBLIC") {
             const authHeaders = req.cookies.coderCookieToken || null
             if (!authHeaders) return next()
             const token = authHeaders.split(" ")[1]
-            const user = jwt.verify(token, process.env.SECRET_KEY)    
-            req.user = user
+            const userId = jwt.verify(token, process.env.SECRET_KEY)    
+            const user = await usersService.getUserById(userId.id)
+            req.user = {
+                id: JSON.stringify(user._id).replace(/^.(.*).$/, '$1'),
+                cart: user.cart,
+                role: user.role.toUpperCase()
+            }
             return next()
         }
         const authHeaders = req.cookies.coderCookieToken || null
         if (!authHeaders) return res.status(401).send({status: "error", error: "Unauthorized"})
         const token = authHeaders.split(" ")[1]
-        const user = jwt.verify(token, process.env.SECRET_KEY)
+        const userId = jwt.verify(token, process.env.SECRET_KEY)    
+        const user = await usersService.getUserById(userId.id)
         if(!policies.includes(user.role.toUpperCase())) return res.status(403).send({status: "error", error: "Unauthorized"})
-        req.user = user
+        req.user = {
+            id: JSON.stringify(user._id).replace(/^.(.*).$/, '$1'),
+            cart: user.cart,
+            role: user.role.toUpperCase()
+        }
         next()
     }
 }

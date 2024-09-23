@@ -1,4 +1,7 @@
 import productsService from "../dao/services/products.service.js"
+import usersService from "../dao/services/users.service.js"
+import {generateProduct} from '../utils.js'
+import nodemailer from 'nodemailer'
 
 // Creamos las funciones necesarias para los productos
 async function getAllProducts(req,res) {
@@ -31,7 +34,10 @@ async function getProductByParamsId(req,res) {
 
 async function postProduct(req,res) {
     try {
-        const product = await productsService.postProduct(req.body)
+        const product = await productsService.postProduct({
+            ...req.body,
+            owner: req.user.id
+        })
         res.sendSuccess(product)
     } catch (error) {
         res.sendServerError("Error al agregar el producto", error)
@@ -40,6 +46,11 @@ async function postProduct(req,res) {
 
 async function putProductByParamsId(req,res) {
     try {
+        if(req.user.role === "USER") return res.sendUserError("Permisos insuficientes para actualizar productos")
+        if(req.user.role === "PREMIUM") {
+            const oldProduct = await productsService.getProductById(req.params.id)
+            if (oldProduct.owner !== req.user.id) return res.sendUserError("Imposible actualizar un porducto que no te pertenece")
+        }
         const newProduct = await productsService.putProductById(req.params.pid, req.body)
         res.sendSuccess(newProduct)
     } catch (error) {
@@ -47,12 +58,53 @@ async function putProductByParamsId(req,res) {
     }
 }
 
+const transport = nodemailer.createTransport({
+    service: 'gmail',
+    port:587,
+    auth:{
+        user: process.env.GMAIL,
+        pass: process.env.GMAIL_PASSWORD
+    }
+})
+
 async function deleteProductByParamsId(req,res) {
     try {
+        if(req.user.role === "USER") return res.sendUserError("Permisos insuficientes para eliminar productos")
+        const oldProduct = await productsService.getProductById(req.params.pid)
+        if(req.user.role === "PREMIUM") {
+            if (oldProduct.owner !== req.user.id) return res.sendUserError("Imposible eliminar un porducto que no te pertenece")
+        }
+        const owner = await usersService.getUserById(oldProduct.owner)
+        if(owner.role === "PREMIUM") {
+            transport.sendMail({
+                from: `CoderHouse ${process.env.GMAIL}`,
+                to: user.email,
+                subject: 'Producto Eliminado',
+                html: `
+                    <div>
+                        <h1>Un prodcuto de su propiedad en CoderHouserExample.com a sido eliminado<h1/>
+                        <p>Este correo es para informarle que un administrador ha eliminado un producto de su propiedad en CoderHouserExample.com<p/>
+                        <p>El producto eliminado es ${oldProduct.title}<p/>
+                    <div/>
+                `
+            })
+        }
         const deletedProduct = await productsService.deleteProductById(req.params.pid)
         res.sendSuccess(deletedProduct)
     } catch (error) {
         res.sendServerError("Error al eliminar el producto", error)
+    }
+}
+
+async function getRandomProducts(req,res) {
+    try {
+        let products = []
+        for(let i=0;i<100;i++){
+            products.push(generateProduct())
+        }
+        res.sendSuccess(products)
+    } catch (error) {
+        res.sendServerError("Error al generar los productos", error)
     }
 }
 
@@ -62,5 +114,6 @@ export default {
     getProductByParamsId,
     postProduct,
     putProductByParamsId,
-    deleteProductByParamsId
+    deleteProductByParamsId,
+    getRandomProducts
 }

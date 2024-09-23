@@ -62,25 +62,25 @@
 <h1>AÑDIR PRODUCTO</h1>
 <form id="addProductForm">
     <label>
-        Title: <input type="text" name="title" id="title" value="producto prueba">
+        Title: <input type="text" name="title" id="title" value="{{mock.title}}">
     </label> <br>
     <label>
-        Description: <input type="text" name="description" id="description" value="Este es un producto de prueba">
+        Description: <input type="text" name="description" id="description" value="{{mock.description}}">
     </label> <br>
     <label>
-        Code: <input type="text" name="code" id="code" value="abc111111">
+        Code: <input type="text" name="code" id="code" value="{{mock.code}}">
     </label> <br>
     <label>
-        Price: <input type="number" name="price" id="price" value="200">
+        Price: <input type="number" name="price" id="price" value="{{mock.price}}">
     </label> <br>
     <label>
-        Status: <input type="text" name="status" id="status" value="true">
+        Status: <input type="text" name="status" id="status" value="{{mock.status}}">
     </label> <br>
     <label>
-        Stock: <input type="number" name="stock" id="stock" value="25">
+        Stock: <input type="number" name="stock" id="stock" value="{{mock.stock}}">
     </label> <br>
     <label>
-        Category: <input type="text" name="category" id="category" value="producto">
+        Category: <input type="text" name="category" id="category" value="{{mock.category}}">
     </label> <br>
     <input type="submit" value="Añadir Producto"/>
 </form>

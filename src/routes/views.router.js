@@ -5,18 +5,30 @@ export default class ViewsRouter extends CustomRouter{
     init() {
         this.get('/',["PUBLIC"], viewsController.renderHome) 
         
-        this.get('/chat',["USER", "ADMIN"], viewsController.renderChat)
+        this.get('/chat',["USER", "ADMIN", "PREMIUM"], viewsController.renderChat)
         
         this.get('/products',["PUBLIC"], viewsController.renderProducts)
         
-        this.get('/cart',["USER", "ADMIN"], viewsController.redirectToCart)
+        this.get('/cart',["USER", "ADMIN", "PREMIUM"], viewsController.redirectToCart)
         
-        this.get('/cart/:cid',["USER", "ADMIN"], viewsController.renderCartFromParamsId)
+        this.get('/cart/:cid',["USER", "ADMIN", "PREMIUM"], viewsController.renderCartFromParamsId)
         
         this.get('/login',["PUBLIC"], viewsController.renderLogin)
         
         this.get('/register',["PUBLIC"], viewsController.renderRegister)
         
-        this.get('/profile',["USER", "ADMIN"], viewsController.renderProfile)  
+        this.get('/profile',["USER", "ADMIN", "PREMIUM"], viewsController.renderProfile)  
+
+        this.get('/forgotpassword',["PUBLIC"], viewsController.renderForgotpassword)
+
+        this.get('/updatepassword/:token',["PUBLIC"], viewsController.renderUpdatePassword)        
+
+        this.get('/upload',["USER", "PREMIUM", "ADMIN"], viewsController.renderUpload)
+
+        this.get('/manageUsers',["ADMIN"], viewsController.renderManageUsers)
+
+        this.get('/manageUsers/:uid',["ADMIN"], viewsController.renderManageSpecificUser)
+
+        this.get('/checkout',["USER", "PREMIUM", "ADMIN"], viewsController.renderCheckout)
     }
 }

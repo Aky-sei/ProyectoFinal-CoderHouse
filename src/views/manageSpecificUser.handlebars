@@ -1,0 +1,27 @@
+<header>
+    <form action="/api/sessions/logout" method="POST">
+        <input type="submit" value="Log-out">
+    </form>
+    <a href="/cart"><button>Cart</button></a>
+    <a href="/products"><button>Ir a comprar</button></a>
+    <a href="/chat"><button>Chat</button></a>
+    <a href="/profile"><button>Perfil</button></a>
+</header>
+<form id="updateForm">
+    <h3>Nombre Completo:</h3>
+    <p>{{user.fullName}}</p>
+    <h3>Email:</h3>
+    <p>{{user.email}}</p>
+    <h3>ID:</h3>
+    <p id="userId">{{user._id}}</p>
+    <h3>Rol:</h3>
+    <p>{{user.role}}</p>
+    <select name="role">
+        <option value="PREMIUM">PREMIUM</option>
+        <option value="ADMIN">ADMIN</option>
+        <option value="USER">USER</option>
+    </select> <br>
+    <input type="submit" value="Actualizar">
+</form>
+<button id="deleteUser">ELIMNAR USUARIO</button>
+<script src="/js/manageUser.js"></script>

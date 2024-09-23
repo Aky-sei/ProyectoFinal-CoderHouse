@@ -1,0 +1,22 @@
+<header>
+    <form action="/api/sessions/logout" method="POST">
+        <input type="submit" value="Log-out">
+    </form>
+    <a href="/products"><button>Seguir Comprando</button></a>
+    <a href="/profile"><button>Perfil</button></a>
+    <a href="/chat"><button>Chat</button></a>
+</header>
+<h1>El total de su compra es: {{total}}</h1>
+<input type="hidden" value="{{cartID}}" id="cartID">
+<button onClick="createTicket()">Proceder a la compra</button>
+<script>
+    const cid = document.getElementById("cartID").value
+    function createTicket() {
+        fetch(`/api/carts/${cid}/purchase`, {
+            method: "GET",
+            headers: {'Content-Type': 'application/json'}
+        }).then(() => {
+            window.location.href = '/profile'
+        })
+    }
+</script>

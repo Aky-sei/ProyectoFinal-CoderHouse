@@ -1,5 +1,8 @@
 import userModel from "../models/users.model.js"
 import { createHash } from "../../utils.js"
+import CustomError from "../errors/CustomError.js"
+import { generatedUserErrorInfo } from "../errors/info.js"
+import EErrors from "../errors/enums.js"
 
 async function getUserById(id) {
     return await userModel.findById(id).lean()
@@ -16,21 +19,72 @@ async function getUserByQuery(query) {
 async function postUserWithCart(user,cart) {
     let { name,lastName,fullName,email,age,password,role } = user
     if (!fullName) fullName = `${name} ${lastName}`
-    if (!fullName || !email || !role || !cart) throw new Error("Por favor, llene todos los campos")
+    if (!fullName || !email || !role || !cart) {
+        CustomError.createError({
+            name: "Error el crear el usuario",
+            cause: generatedUserErrorInfo(user),
+            message: "Error al crear el usuario",
+            code: EErrors.INVALID_TYPES_ERROR
+        })
+    }
     const newUser = userModel.create({
         fullName,
         email,
         age,
         password: createHash(password),
         role,
-        cart: cart._id
+        cart: cart._id,
+        documents: []
     })
     return newUser
+}
+
+async function putUserById(id, user) {
+    let { name,lastName,fullName,email,age,password,role,cart,documents,last_connection } = user
+    if (!fullName) fullName = `${name} ${lastName}`
+    if (!fullName || !email || !role || !cart) {
+        CustomError.createError({
+            name: "Error el actualizar el usuario",
+            cause: generatedUserErrorInfo(user),
+            message: "Error al actualizar el usuario",
+            code: EErrors.INVALID_TYPES_ERROR
+        })
+    }
+    const newUser = userModel.replaceOne({_id:id}, {
+        fullName,
+        email,
+        age,
+        password,
+        role,
+        cart: cart._id,
+        documents,
+        last_connection
+    })
+    return newUser
+}
+
+async function getAllFilteredUsers() {
+    let users = await userModel.find().select('fullName email role').lean()
+    return users
+}
+
+async function getAllUsers(){
+    let users = await userModel.find().lean()
+    return users
+}
+
+async function deleteUserById(id) {
+    let deletedUser = await userModel.deleteOne({_id:id})
+    return deletedUser
 }
 
 export default {
     getUserById,
     getUserByQuery,
     postUserWithCart,
-    getPopulatedUserById
+    getPopulatedUserById,
+    putUserById,
+    getAllFilteredUsers,
+    getAllUsers,
+    deleteUserById
 }

@@ -11,7 +11,8 @@ const productSchema = new mongoose.Schema({
     status:{type:Boolean, required: true},
     stock:{type:Number, required: true},
     category:{type:String, required: true},
-    thumbnail:{type:Array, requred:false, default: []}
+    thumbnail:{type:Array, requred:false, default: []},
+    owner:{type:String, defaul: "admin"}
 })
 productSchema.plugin(mongoosePginate)
 
