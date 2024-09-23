@@ -1,9 +1,7 @@
-import 'dotenv/config'
-
 let form = document.getElementById("loginForm")
 form.addEventListener("submit", async (e) => {
     e.preventDefault()
-    await fetch(`${process.env.HOST}/api/sessions/login`, {
+    await fetch(`/api/sessions/login`, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

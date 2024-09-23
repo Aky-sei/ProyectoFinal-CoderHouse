@@ -1,5 +1,3 @@
-import 'dotenv/config'
-
 const addProductForm = document.getElementById("addProductForm")
 const deleteProductForm = document.getElementById("deleteProductForm")
 
@@ -27,7 +25,7 @@ addProductForm.addEventListener('submit', async (e) => {
 deleteProductForm.addEventListener('submit', async (e) => {
     e.preventDefault()
     try {
-        await fetch(`${process.env.HOST}/api/products/${deleteProductForm[0].value}`, {
+        await fetch(`/api/products/${deleteProductForm[0].value}`, {
             method: "DELETE",
             headers: {'Content-Type': 'application/json'}
         })
