@@ -37,7 +37,7 @@ async function renderProducts(req,res) {
     const products = await productsService.getPaginatedProducts(req.query)
     res.render('products', {
         isLoged: user ? true : false,
-        isAdmin: user ? user.role === "ADMIN"||"PREMIUM" ? true : false : false,
+        isAdmin: user ? (user.role == "ADMIN"||user.role == "PREMIUM") ? true : false : false,
         user: user,
         products: products.docs,
         pageData: products,
